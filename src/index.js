@@ -7,6 +7,3 @@ const bootstrap = async () => {
 };
 
 bootstrap();
-
-// mongodb+srv://eWP8Vn4WbnqaxHoC:<password>@cluster0.c87ywqz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-/*<password>  eWP8Vn4WbnqaxHoC */
