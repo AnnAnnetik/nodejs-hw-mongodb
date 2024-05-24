@@ -22,28 +22,45 @@ export const setupServer = () => {
   app.use(express.json());
 
   app.get('/contacts', async (req, res) => {
-    const contacts = await getALLContacts();
-    res.status(200).json({
-      status: '200',
-      message: 'Successfully found contacts!',
-      data: contacts,
-    });
-  });
-  app.get('/contacts/:contactId', async (req, res) => {
-    const { contactId } = req.params;
-    const contact = await getContactById(contactId);
-    res.status(200).json({
-      status: '200',
-      message: 'Successfully found contact with id {contactId}!',
-      data: contact,
-    });
+    try {
+      const contacts = await getALLContacts();
+      res.status(200).json({
+        status: '200',
+        message: 'Successfully found contacts!',
+        data: contacts,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: '500',
+        message: 'Something went wrong!',
+        data: error.message,
+      });
+    }
   });
 
-  app.use('*', (req, res, next) => {
+  app.get('/contacts/:contactId', async (req, res) => {
+    try {
+      const { contactId } = req.params;
+      const contact = await getContactById(contactId);
+
+      res.status(200).json({
+        status: '200',
+        message: `Successfully found contact with id ${contactId}!`,
+        data: contact,
+      });
+    } catch (error) {
+      res.status(404).json({
+        status: '404',
+        message: 'Contact not found!',
+        data: error.message,
+      });
+    }
+  });
+
+  app.use('*', (req, res) => {
     res.status(404).json({
       message: 'Not found',
     });
-    next();
   });
 
   app.listen(PORT, () => {
