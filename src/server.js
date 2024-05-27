@@ -1,4 +1,5 @@
 import express from 'express';
+import { isValidObjectId } from 'mongoose';
 import pino from 'pino-http';
 import cors from 'cors';
 import { env } from './utils/env.js';
@@ -47,6 +48,12 @@ export const setupServer = () => {
         return res.status(404).json({
           status: '404',
           message: 'Contact not found!',
+        });
+      }
+      if (!isValidObjectId(contactId)) {
+        return res.status(400).json({
+          status: '400',
+          message: 'Invalid id!',
         });
       }
 
