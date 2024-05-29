@@ -4,22 +4,10 @@ import pino from 'pino-http';
 import cors from 'cors';
 import { env } from './utils/env.js';
 import router from './routers/contacts.js';
+import { errorHandler } from './middleware/errorHandler.js';
+import { notFoundHandler } from './middleware/notFoundHandler.js';
 
 const PORT = Number(env('PORT', '3000'));
-
-const errorHandler = (err, req, res) => {
-  res.status(500).json({
-    status: 500,
-    message: 'Something went wrong',
-    data: err.message,
-  });
-};
-
-const notFoundHandler = (req, res) => {
-  res.status(404).json({
-    message: 'Route not found',
-  });
-};
 
 export const setupServer = () => {
   const app = express();
@@ -40,12 +28,6 @@ export const setupServer = () => {
   app.use('*', notFoundHandler);
 
   app.use(errorHandler);
-
-  app.use('*', (req, res) => {
-    res.status(404).json({
-      message: 'Not found',
-    });
-  });
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
