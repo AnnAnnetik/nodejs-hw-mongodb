@@ -9,8 +9,9 @@ const PORT = Number(env('PORT', '3000'));
 
 const errorHandler = (err, req, res) => {
   res.status(500).json({
+    status: 500,
     message: 'Something went wrong',
-    error: err.message,
+    data: err.message,
   });
 };
 
