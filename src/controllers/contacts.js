@@ -8,9 +8,19 @@ import {
   getContactById,
   updateContact,
 } from '../services/contacts.js';
+import { query } from 'express';
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { parseSortParams } from '../utils/parseSortParams.js';
 
 export const getContactsController = async (req, res) => {
-  const contacts = await getALLContacts();
+  const { page, perPage } = parsePaginationParams(req, query);
+  const { sortBy, sortOrder } = parseSortParams(req.query);
+  const contacts = await getALLContacts({
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+  });
 
   res.json({
     status: 200,
