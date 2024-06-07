@@ -8,14 +8,14 @@ const parseSortOrder = (sortOrder) => {
 
 const parseSortBy = (sortBy) => {
   const keysOfContact = [
-    // '_id',
+    '_id',
     'name',
-    // 'age',
-    // 'gender',
-    // 'avgMark',
-    // 'onDuty',
-    // 'createdAt',
-    // 'updatedAt',
+    'age',
+    'gender',
+    'avgMark',
+    'onDuty',
+    'createdAt',
+    'updatedAt',
   ];
 
   if (keysOfContact.includes(sortBy)) {

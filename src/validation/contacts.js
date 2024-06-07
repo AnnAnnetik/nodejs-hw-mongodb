@@ -18,9 +18,7 @@ export const createContactSchema = Joi.object({
     .valid('personal', 'work', 'home')
     .default('personal'),
 });
-// const validationResult = createContactSchema.validate(userData, {
-//   abortEarly: false,
-// });
+
 export const updateContactSchema = Joi.object({
   name: Joi.string().min(3).max(20).required(true).messages({
     'string.base': 'Username should be a string',
