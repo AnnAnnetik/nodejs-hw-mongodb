@@ -14,7 +14,7 @@ const parseContactType = (contactType) => {
   return type;
 };
 
-export const parseFilters = (query) => {
+export const parseFilterParams = (query) => {
   return {
     isFavourite: parseBoolean(query.isFavourite),
     contactType: parseContactType(query.contactType),
