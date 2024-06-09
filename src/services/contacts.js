@@ -22,14 +22,14 @@ export const getALLContacts = async ({
     contactsQuery.where('isFavorite').equals(filter.isFavorite);
   }
 
-  const [contactsCount, contacts] = await Promise.all([
-    Contact.find().merge(contactsQuery).countDocuments(),
-    contactsQuery
-      .skip(skip)
-      .limit(limit)
-      .sort({ [sortBy]: sortOrder })
-      .exec(),
-  ]);
+  const contactsCount = await Contact.find(
+    contactsQuery.getQuery(),
+  ).countDocuments();
+  const contacts = await contactsQuery
+    .skip(skip)
+    .limit(limit)
+    .sort({ [sortBy]: sortOrder })
+    .exec();
 
   const paginationData = calculatePaginationData(contactsCount, perPage, page);
 
@@ -50,7 +50,7 @@ export const createContact = async (payload) => {
 };
 
 export const deleteContact = async (contactId) => {
-  const contact = await Contact.findOneAndUpdate({ _id: contactId });
+  const contact = await Contact.findByIdAndDelete({ _id: contactId });
   return contact;
 };
 
