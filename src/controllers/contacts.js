@@ -1,6 +1,3 @@
-import createHttpError from 'http-errors';
-
-import { isValidObjectId } from 'mongoose';
 import {
   createContact,
   deleteContact,
@@ -8,9 +5,24 @@ import {
   getContactById,
   updateContact,
 } from '../services/contacts.js';
+import { query } from 'express';
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { parseSortParams } from '../utils/parseSortParams.js';
+import { parseFilterParams } from '../utils/parseFilterParams.js';
+import createHttpError from 'http-errors';
 
 export const getContactsController = async (req, res) => {
-  const contacts = await getALLContacts();
+  const { page, perPage } = parsePaginationParams(req, query);
+
+  const { sortBy, sortOrder } = parseSortParams(req.query);
+  const filter = parseFilterParams(req.query);
+  const contacts = await getALLContacts({
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+    filter,
+  });
 
   res.json({
     status: 200,
@@ -22,11 +34,7 @@ export const getContactsController = async (req, res) => {
 export const getContactByIdController = async (req, res, next) => {
   const { contactId } = req.params;
 
-  if (!isValidObjectId(contactId)) {
-    return next(createHttpError(400, 'Invalid id!'));
-  }
   const contact = await getContactById(contactId);
-
   if (!contact) {
     return next(createHttpError(404, 'Contact not found'));
   }
@@ -37,6 +45,7 @@ export const getContactByIdController = async (req, res, next) => {
     data: contact,
   });
 };
+
 export const createContactController = async (req, res) => {
   const contact = await createContact(req.body);
 
@@ -49,8 +58,8 @@ export const createContactController = async (req, res) => {
 
 export const deleteContactController = async (req, res, next) => {
   const { contactId } = req.params;
-  const contact = await deleteContact(contactId);
 
+  const contact = await deleteContact(contactId);
   if (!contact) {
     return next(createHttpError(404, 'Contact not found'));
   }
@@ -61,11 +70,7 @@ export const deleteContactController = async (req, res, next) => {
 export const updateContactController = async (req, res, next) => {
   const { contactId } = req.params;
 
-  if (!isValidObjectId(contactId)) {
-    return next(createHttpError(400, 'Invalid id!'));
-  }
   const contact = await updateContact(contactId, req.body);
-
   if (!contact) {
     return next(createHttpError(404, 'Contact not found'));
   }
