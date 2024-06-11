@@ -13,6 +13,7 @@ import {
   updateContactSchema,
 } from '../validation/contacts.js';
 import { validateMongoId } from '../middleware/validateMongoId.js';
+import { authenticate } from '../middlewares/authenticate.js';
 
 const router = Router();
 
@@ -25,6 +26,10 @@ const ctrlWrapper = (controller) => {
     }
   };
 };
+
+router.use(authenticate);
+
+router.get('/', ctrlWrapper(getContactsController));
 
 router.use('/contacts/:contactId', validateMongoId('contactId'));
 
