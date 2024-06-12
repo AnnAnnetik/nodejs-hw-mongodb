@@ -13,11 +13,11 @@ import {
   updateContactSchema,
 } from '../validation/contacts.js';
 import { validateMongoId } from '../middleware/validateMongoId.js';
-import { authenticate } from '../middlewares/authenticate.js';
+import { authenticate } from '../middleware/authenticate.js';
 
-const router = Router();
+const contactsRouter = Router();
 
-const ctrlWrapper = (controller) => {
+export const ctrlWrapper = (controller) => {
   return async (req, res, next) => {
     try {
       await controller(req, res, next);
@@ -27,24 +27,24 @@ const ctrlWrapper = (controller) => {
   };
 };
 
-router.use(authenticate);
+contactsRouter.use(authenticate);
 
-router.get('/', ctrlWrapper(getContactsController));
+contactsRouter.get('/', ctrlWrapper(getContactsController));
 
-router.use('/contacts/:contactId', validateMongoId('contactId'));
+contactsRouter.use('/:contactId', validateMongoId('contactId'));
 
-router.get('/contacts', ctrlWrapper(getContactsController));
-router.get('/contacts/:contactId', ctrlWrapper(getContactByIdController));
-router.post(
-  '/contacts',
+contactsRouter.get('/', ctrlWrapper(getContactsController));
+contactsRouter.get('/:contactId', ctrlWrapper(getContactByIdController));
+contactsRouter.post(
+  '/',
   validateBody(createContactSchema),
   ctrlWrapper(createContactController),
 );
-router.delete('/contacts/:contactId', ctrlWrapper(deleteContactController));
-router.patch(
-  '/contacts/:contactId',
+contactsRouter.delete('/:contactId', ctrlWrapper(deleteContactController));
+contactsRouter.patch(
+  '/:contactId',
   validateBody(updateContactSchema),
   ctrlWrapper(updateContactController),
 );
 
-export default router;
+export default contactsRouter;

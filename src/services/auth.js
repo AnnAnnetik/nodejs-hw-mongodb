@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import createHttpError from 'http-errors';
 import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/index.js';
-import { Sessions } from '../db/models/session.js';
+import { Session } from '../db/models/session.js';
 import { User } from '../db/models/user.js';
 
 export const registerUser = async (payload) => {
@@ -25,12 +25,12 @@ export const loginUser = async (payload) => {
     throw createHttpError(401, 'Unauthorized');
   }
 
-  await Sessions.deleteOne({ userId: user._id });
+  await Session.deleteOne({ userId: user._id });
 
   const accessToken = randomBytes(30).toString('base64');
   const refreshToken = randomBytes(30).toString('base64');
 
-  return await Sessions.create({
+  return await Session.create({
     userId: user._id,
     accessToken,
     refreshToken,
@@ -40,7 +40,7 @@ export const loginUser = async (payload) => {
 };
 
 export const logoutUser = async (sessionId) => {
-  await Sessions.deleteOne({ _id: sessionId });
+  await Session.deleteOne({ _id: sessionId });
 };
 
 const createSession = () => {
@@ -56,7 +56,7 @@ const createSession = () => {
 };
 
 export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
-  const session = await Sessions.findOne({
+  const session = await Session.findOne({
     _id: sessionId,
     refreshToken,
   });
@@ -74,7 +74,7 @@ export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
 
   const newSession = createSession();
 
-  return await Sessions.create({
+  return await Session.create({
     userId: session.userId,
     ...newSession,
   });
