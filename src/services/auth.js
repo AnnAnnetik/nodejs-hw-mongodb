@@ -6,6 +6,8 @@ import { Session } from '../db/models/session.js';
 import { User } from '../db/models/user.js';
 
 export const registerUser = async (payload) => {
+  const isEmail = await User.findOne({ email: payload.email });
+  if (isEmail) throw createHttpError(409, 'Email in use');
   const encryptedPassword = await bcrypt.hash(payload.password, 10);
 
   return await User.create({
