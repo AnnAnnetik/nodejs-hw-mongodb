@@ -14,7 +14,8 @@ import {
 } from '../validation/contacts.js';
 import { validateMongoId } from '../middleware/validateMongoId.js';
 import { authenticate } from '../middleware/authenticate.js';
-import { upload } from '../middlewares/multer.js';
+import { upload } from '../middleware/multer.js';
+
 
 const contactsRouter = Router();
 
