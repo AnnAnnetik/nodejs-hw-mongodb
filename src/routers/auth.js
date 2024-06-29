@@ -1,10 +1,13 @@
 import { Router } from 'express';
 
 import {
+  loginWithGoogleOAuthSchema,
   registerUserSchema,
   requestResetEmailSchema,
 } from '../validation/auth.js';
 import {
+  getGoogleOAuthUrlController,
+  loginWithGoogleController,
   registerUserController,
   requestResetEmailController,
 } from '../controllers/auth.js';
@@ -47,4 +50,13 @@ authRouter.post(
   validateBody(resetPasswordSchema),
   ctrlWrapper(resetPasswordController),
 );
+
+authRouter.post('/get-oauth-url', ctrlWrapper(getGoogleOAuthUrlController));
+
+authRouter.post(
+  '/confirm-oauth',
+  validateBody(loginWithGoogleOAuthSchema),
+  ctrlWrapper(loginWithGoogleController),
+);
+
 export default authRouter;
